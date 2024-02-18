@@ -10,10 +10,10 @@
 /***************************************************************************/
 /*                           Clock Options                                 */
 /***************************************************************************/
-#define RCC_CLOCK_HSI            0x1
-#define RCC_CLOCK_HSE_BYPASS     0x50000
-#define RCC_CLOCK_HSE_CRYSTAL    0x10000
-#define RCC_CLOCK_PLL            0x1000000
+#define RCC_CLOCK_HSI            0x00000001
+#define RCC_CLOCK_HSE_BYPASS     0x00050000
+#define RCC_CLOCK_HSE_CRYSTAL    0x00010000
+#define RCC_CLOCK_PLL            0x01000000
 
 
 /***************************************************************************/
@@ -23,7 +23,7 @@
 
 //#define RCC_PLL_INPUT             0x400000
 #define RCC_PLL_INPUT_HSI           0xffbfffff         // & = to clear the bit
-#define RCC_PLL_INPUT_HSE           0x400000           // |= to set this bit
+#define RCC_PLL_INPUT_HSE           0x00400000           // |= to set this bit
 
 
 
@@ -42,30 +42,30 @@
 /*                           Prescaler Options                             */
 /***************************************************************************/
 
-#define	RCC_AHB_PRESC_2        0x80
-#define	RCC_AHB_PRESC_4        0x90
-#define	RCC_AHB_PRESC_8        0xa0
-#define	RCC_AHB_PRESC_16       0xb0
-#define	RCC_AHB_PRESC_64       0xc0
-#define	RCC_AHB_PRESC_128      0xd0
-#define	RCC_AHB_PRESC_256      0xe0
-#define	RCC_AHB_PRESC_512      0xf0
-#define RCC_AHB_NO_PRESC       0Xf0
+#define	RCC_AHB_PRESC_2        0x00000080
+#define	RCC_AHB_PRESC_4        0x00000090
+#define	RCC_AHB_PRESC_8        0x000000a0
+#define	RCC_AHB_PRESC_16       0x000000b0
+#define	RCC_AHB_PRESC_64       0x000000c0
+#define	RCC_AHB_PRESC_128      0x000000d0
+#define	RCC_AHB_PRESC_256      0x000000e0
+#define	RCC_AHB_PRESC_512      0x000000f0
+#define RCC_AHB_NO_PRESC       0X00000000
 #define RCC_AHB_CLEAR_PRESC    0xFFFFFF0F
 
 
-#define	RCC_APB2_PRESC_2       0x8000
-#define	RCC_APB2_PRESC_4       0xA000
-#define	RCC_APB2_PRESC_8       0xC000
-#define	RCC_APB2_PRESC_16      0xE000
-#define RCC_APB2_NO_PRESC      0XE000
+#define	RCC_APB2_PRESC_2       0x00008000
+#define	RCC_APB2_PRESC_4       0x0000A000
+#define	RCC_APB2_PRESC_8       0x0000C000
+#define	RCC_APB2_PRESC_16      0x0000E000
+#define RCC_APB2_NO_PRESC      0X00000000
 #define RCC_APB2_CLEAR_PRESC    0xFFFF1FFF
 
-#define	RCC_APB1_PRESC_2       0x1000
-#define	RCC_APB1_PRESC_4       0x1400
-#define	RCC_APB1_PRESC_8       0x1800
-#define	RCC_APB1_PRESC_16      0x1C00
-#define RCC_APB1_NO_PRESC      0X1C00
+#define	RCC_APB1_PRESC_2       0x00001000
+#define	RCC_APB1_PRESC_4       0x00001400
+#define	RCC_APB1_PRESC_8       0x00001800
+#define	RCC_APB1_PRESC_16      0x00001C00
+#define RCC_APB1_NO_PRESC      0X00000000
 #define RCC_APB1_CLEAR_PRESC    0xFFFFE3FF
 
 
@@ -77,44 +77,44 @@
 /*                     Peripherals   and  on which bus                     */
 /***************************************************************************/
 
-#define		USB      0x80      //AHB2
+#define		USB      0x00000080      //AHB2
 
-#define		DMA2     0x400000  //AHB1
-#define		DMA1     0x200000  //AHB1
-#define		CRC      0x1000    //AHB1
-#define		GPIOH    0x80      //AHB1
-#define		GPIOE    0x10  //AHB1
-#define		GPIOD    0x8 //AHB1
-#define		GPIOC    0x4   //AHB1
-#define		GPIOB    0x2  //AHB1
-#define		GPIOA    0x1   //AHB1
+#define		DMA2     0x00400000  //AHB1
+#define		DMA1     0x00200000  //AHB1
+#define		CRC      0x00001000    //AHB1
+#define		GPIOH    0x00000080      //AHB1
+#define		GPIOE    0x00000010  //AHB1
+#define		GPIOD    0x00000008 //AHB1
+#define		GPIOC    0x00000004   //AHB1
+#define		GPIOB    0x00000002  //AHB1
+#define		GPIOA    0x00000001   //AHB1
 
 
-#define		TIM11    0x40000//APB2
-#define		TIM10    0x20000//APB2
-#define		TIM9     0x10000//APB2
-#define		SYSCFG   0x4000 //APB2
-#define		SPI4     0x2000 //APB2
-#define		SPI1     0x1000 //APB2
-#define		SDIO     0x800  //APB2
-#define		ADC1     0x100  //APB2
-#define		USART6   0x20   //APB2
-#define		USART1   0x10   //APB2
-#define		TIM1     0x1    //APB2
+#define		TIM11    0x00040000//APB2
+#define		TIM10    0x00020000//APB2
+#define		TIM9     0x00010000//APB2
+#define		SYSCFG   0x00004000 //APB2
+#define		SPI4     0x00002000 //APB2
+#define		SPI1     0x00001000 //APB2
+#define		SDIO     0x00000800  //APB2
+#define		ADC1     0x00000100  //APB2
+#define		USART6   0x00000020   //APB2
+#define		USART1   0x00000010   //APB2
+#define		TIM1     0x00000001    //APB2
 
 
 #define		PWR      0x10000000  //APB1
-#define		I2C3     0x800000 //APB1
-#define		I2C2     0x400000 //APB1
-#define		I2C1     0x200000 //APB1
-#define		USART2   0x20000  //APB1
-#define		SPI3     0x8000   //APB1
-#define		SPI2     0x4000   //APB1
-#define		WWDG     0x800   //APB1
-#define		TIM5     0x8    //APB1
-#define		TIM4     0x4    //APB1
-#define		TIM3     0x2    //APB1
-#define		TIM2     0x1 //APB1
+#define		I2C3     0x00800000 //APB1
+#define		I2C2     0x00400000 //APB1
+#define		I2C1     0x00200000 //APB1
+#define		USART2   0x00020000  //APB1
+#define		SPI3     0x00008000   //APB1
+#define		SPI2     0x00004000   //APB1
+#define		WWDG     0x00000800   //APB1
+#define		TIM5     0x00000008    //APB1
+#define		TIM4     0x00000004    //APB1
+#define		TIM3     0x00000002    //APB1
+#define		TIM2     0x00000001 //APB1
 
 
 typedef  unsigned char       u8 ;

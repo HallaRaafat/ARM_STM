@@ -1,20 +1,20 @@
 #include "RCC.h"
 
-#define RCC_Base_Address 0x40023800
+#define RCC_BASE_ADDRESS 0x40023800
 
-#define HSIRDY_MASK      0x2
-#define HSERDY_MASK      0x20000
-#define PLLRDY_MASK      0x2000000
+#define HSIRDY_MASK      0x00000002
+#define HSERDY_MASK      0x00020000
+#define PLLRDY_MASK      0x02000000
 
-#define SW_SYSCLK_MASK   0x3
-#define SW_HSE           0x1
-#define SW_HSI           0x0
-#define SW_PLL           0X2
+#define SW_SYSCLK_MASK   0x00000003
+#define SW_HSE           0x00000001
+#define SW_HSI           0x00000000
+#define SW_PLL           0X00000002
 
-#define SWS_SYSCLK_STATUS_MASK           0xc
-#define SWS_HSE                          0x4
-#define SWS_HSI                          0x0
-#define SWS_PLL                          0x8
+#define SWS_SYSCLK_STATUS_MASK           0x0000000c
+#define SWS_HSE                          0x00000004
+#define SWS_HSI                          0x00000000
+#define SWS_PLL                          0x00000008
 
 
 
@@ -95,7 +95,7 @@ typedef struct {
 
 //allocate the size of the pointer only depends on bus not the struct
 // POINTEE (pointing to volatile (bring from memory dont optimaize)) * constant POINTER (RCC)
-volatile RCC_t * const RCC = (volatile RCC_t * const) RCC_Base_Address;
+volatile RCC_t * const RCC = (volatile RCC_t * const) RCC_BASE_ADDRESS;
 
 
 /*
