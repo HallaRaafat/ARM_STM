@@ -8,7 +8,7 @@
 #ifndef GPIO_H_
 #define GPIO_H_
 
-
+#include "LIB/STD_Types.h"
 
 /******************************************************************************************/
 /*                                  Ports                                                 */
@@ -91,8 +91,7 @@
 #define GPIO_OUTPUT_SPEED_VHIGH 0x00000003
 
 /******************************************************************************************/
-typedef unsigned long uint32;
-typedef unsigned char uint8;
+
 typedef struct
 {
   uint32 Pin;
