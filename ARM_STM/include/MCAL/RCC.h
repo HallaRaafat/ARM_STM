@@ -6,7 +6,7 @@
  *
  */
 
-
+#include "LIB/STD_Types.h"
 /***************************************************************************/
 /*                           Clock Options                                 */
 /***************************************************************************/
@@ -117,9 +117,7 @@
 #define		TIM2     0x00000001 //APB1
 
 
-typedef  unsigned char       u8 ;
-typedef  unsigned short int  u16 ;
-typedef  unsigned int        uint32 ;
+
 
 
 typedef enum {

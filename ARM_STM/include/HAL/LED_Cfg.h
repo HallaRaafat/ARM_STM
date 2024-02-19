@@ -2,11 +2,27 @@
  * LED_Cfg.h
  *
  *  Created on: Feb 19, 2024
- *      Author: Lenovo
+ *      Author: Halla Raafat
  */
 
 #ifndef LED_CFG_H_
 #define LED_CFG_H_
+
+
+
+
+
+
+/*
+ * Insert leds names and configure the connection in LED_cfg.c file
+ */
+typedef enum
+{
+LED_FRONT_RIGHT,
+LED_FRONT_LEFT,
+LED_NUMBERS_
+}LED_Names_t;
+
 
 
 
