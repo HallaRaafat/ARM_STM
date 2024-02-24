@@ -11,12 +11,13 @@
 #include "HAL/LED_Cfg.h"
 #include "LIB/STD_Types.h"
 
-#define LED_CONN_FORWARD           0X1                //LED CONNECTION FORWARD
-#define LED_CONN_REVERSED          0X1
+#define LED_CONN_FORWARD           0x00000000                //LED CONNECTION FORWARD
+#define LED_CONN_REVERSED          0x00000001
 
 
-#define LED_STATE_ON               0x1
-#define LED_STATE_OFF              0x1
+#define LED_STATE_ON               0x00000001
+#define LED_STATE_OFF              0x00000000
+
 
 
 // struct for leds configuration
@@ -38,7 +39,8 @@ typedef enum
 }LED_ErrorStatus_t;
 
 LED_ErrorStatus_t LED_Init(void);
-
+// enter the led name defined in led_cfg file enum
+// status ente LED_STATE_ON or LED_STATE_OFF
 
 LED_ErrorStatus_t LED_SetState(LED_Names_t Led ,uint32 Status);
 
