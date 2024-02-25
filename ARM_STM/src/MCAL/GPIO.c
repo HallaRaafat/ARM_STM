@@ -82,7 +82,7 @@ peripheral functions
 #define PUPDR_MASK  0x00000018
 
 #define TWO_BITS      2
-#define PORT_SIZE   0x0000000f
+#define PORT_SIZE   0x00000010
 typedef struct
 {
   uint32 MODER;
