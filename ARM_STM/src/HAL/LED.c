@@ -49,8 +49,15 @@ LED_ErrorStatus_t LED_Init(void)
 LED_ErrorStatus_t LED_SetState(LED_Names_t Led ,uint32 Status)
 {
 	LED_ErrorStatus_t Local_ErrorState= LED_NOK;
-
-	GPIO_ErrorStatus_t Local_GPIO_Error= GPIO_SetPinValue(LEDS_ARR[Led].Port,LEDS_ARR[Led].Pin,LEDS_ARR[Led].Connection^Status);
+    /*
+     * xor
+     *                             so if ON is 1 and off is 0   by doing xor
+     *      00  0                 frw is 0     1            0
+     *      01  1                 rvr is 1     0            1
+     *      10  1
+     *      11  0
+     */
+	GPIO_ErrorStatus_t Local_GPIO_Error= GPIO_SetPinValue(LEDS_ARR[Led].Port,LEDS_ARR[Led].Pin,(LEDS_ARR[Led].Connection^Status));
 
           if (Local_GPIO_Error== GPIO_OK)
           	Local_ErrorState= LED_OK;

@@ -145,7 +145,7 @@ RCC_ErrorStatus_t    RCC_ManageClock(uint32 Clock ,uint32 STATE )
 				switch(STATE)
 				{
 
-							case STATE_ENABLE:
+							case RCC_STATE_ENABLE:
 
 											   switch (Clock)
 											   {// set the bit in the CR register wait if isnt not ready
@@ -163,7 +163,7 @@ RCC_ErrorStatus_t    RCC_ManageClock(uint32 Clock ,uint32 STATE )
 
 												 break;
 
-							case STATE_DISABLE:
+							case RCC_STATE_DISABLE:
 											   RCC ->CR &= ~Clock;
 
 											   switch (Clock)
@@ -361,7 +361,7 @@ RCC_ErrorStatus_t	 RCC_ControlPeripheral(RCC_Bus_t Bus , uint32 Peripheral,uint3
 RCC_ErrorStatus_t Local_ErrorState= RCC_NOK;
 switch (STATE)
 {
-case STATE_ENABLE:
+case RCC_STATE_ENABLE:
                     switch(Bus)
 						{
                               case RCC_AHB1 :
@@ -378,7 +378,7 @@ case STATE_ENABLE:
 									break;
 						}
 	                 break;
-case STATE_DISABLE:
+case RCC_STATE_DISABLE:
 	                switch(Bus)
 	                    {
 

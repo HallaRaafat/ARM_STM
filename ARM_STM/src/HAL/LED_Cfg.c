@@ -30,10 +30,10 @@ const LED_Cfg_t LEDS_ARR [LED_NUMBERS_]=
 					.InitState=LED_STATE_ON},
 
 [LED_FRONT_LEFT]={
-					.Port= GPIO_PORTB,
-					.Pin= GPIO_PIN15,
-					.Connection= LED_CONN_REVERSED,
-					.InitState=LED_STATE_OFF}
+					.Port= GPIO_PORTA,
+					.Pin= GPIO_PIN8,
+					.Connection= LED_CONN_FORWARD,
+					.InitState=LED_STATE_ON}
 
 };
 

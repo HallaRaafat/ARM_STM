@@ -30,7 +30,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "diag/trace.h"
-
+#include "HAL/LED.h"
+#include "MCAL/RCC.h"
+#include "HAL/Switch.h"
+#include "LIB/STD_Types.h"
 // ----------------------------------------------------------------------------
 //
 // Standalone STM32F4 empty sample (trace via DEBUG).
@@ -50,17 +53,41 @@
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wmissing-declarations"
 #pragma GCC diagnostic ignored "-Wreturn-type"
-
+#define TEST_LED
 int
 main(int argc, char* argv[])
 {
   // At this stage the system clock should have already been configured
   // at high speed.
-
+	RCC_ManageClock(RCC_CLOCK_HSE_CRYSTAL,RCC_STATE_ENABLE);
+	RCC_SelectSystemClock(RCC_CLOCK_HSE_CRYSTAL);
+	RCC_ConfigurePrescalar(RCC_AHB1,RCC_AHB_PRESC_64);
+	RCC_ControlPeripheral(RCC_AHB1,GPIOA,RCC_STATE_ENABLE);
+   LED_Init();
+   SW_Init();
+   uint8 s1;
   // Infinite loop
   while (1)
     {
        // Add your code here.
+#ifdef  TEST_LED
+
+	  SW_GetState(SW_MUSIC_PLAY,&s1);
+			  if (s1  == SW_STATE_ON)
+			  {
+				  LED_SetState(LED_FRONT_RIGHT,LED_STATE_ON);
+				  LED_SetState(LED_FRONT_LEFT,LED_STATE_OFF);
+			  }
+
+			  else
+			  {
+				  LED_SetState(LED_FRONT_LEFT,LED_STATE_ON);
+				  LED_SetState(LED_FRONT_RIGHT,LED_STATE_OFF);
+			  }
+	 // for(long int i=0 ; i<160000;i++); // as a one sec simulation not accurate
+	 // LED_SetState(LED_FRONT_RIGHT,LED_STATE_OFF);
+	 // for(long int i=0 ; i<160000;i++);
+#endif
     }
 }
 
