@@ -61,7 +61,7 @@ main(int argc, char* argv[])
 {
   // At this stage the system clock should have already been configured
   // at high speed.
-	/*RCC_ManageClock(RCC_CLOCK_HSE_CRYSTAL,RCC_STATE_ENABLE);
+	RCC_ManageClock(RCC_CLOCK_HSE_CRYSTAL,RCC_STATE_ENABLE);
 	RCC_SelectSystemClock(RCC_CLOCK_HSE_CRYSTAL);
 	RCC_ConfigurePrescalar(RCC_AHB1,RCC_AHB_PRESC_64);
 	RCC_ControlPeripheral(RCC_AHB1,GPIOA,RCC_STATE_ENABLE);
@@ -86,19 +86,10 @@ main(int argc, char* argv[])
 				  LED_SetState(LED_FRONT_LEFT,LED_STATE_ON);
 				  LED_SetState(LED_FRONT_RIGHT,LED_STATE_OFF);
 			  }
-	 // for(long int i=0 ; i<160000;i++); // as a one sec simulation not accurate
-	 // LED_SetState(LED_FRONT_RIGHT,LED_STATE_OFF);
-	 // for(long int i=0 ; i<160000;i++);
-#endif
-*/
-	    Log_ConfigFile("log.txt");
-	    Log_SetSeverity(Log_Error);
-	    Log_Write(Log_Error,"error message %d %s",1,"youmna" );
-	    Log_Write(Log_Info,"info message %d",1 );
-	    Log_Write(Log_Critical,"critical message %d",1 );
-	    Log_Write(Log_Error,"error message %d",2 );
 
-	    Log_Close ();
+#endif
+
+    }
     }
 
 
