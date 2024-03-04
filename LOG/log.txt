@@ -1,0 +1,1 @@
+[Tue Mar  5 00:01:34 2024] [CRITICAL] critical message 1
