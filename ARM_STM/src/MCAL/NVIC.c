@@ -367,9 +367,9 @@ NVIC_Error_t NVIC_GetPirority(uint8 NVIC_IRQ,uint8 * Group_Priority)
 	 uint8 Local_IRQ_Register = NVIC_IRQ/NVIC_PRI_IRQ_PER_REG;
 	 uint8 Local_IRQ_BYTE_offset=NVIC_IRQ%NVIC_PRI_IRQ_PER_REG;
 
-	 uint32 Local_IPR= NVIC->IPR[Local_IRQ_Register];
 
-	   *Group_Priority=(uint8)(Local_IPR>>  ((Local_IRQ_BYTE_offset * BYTE_IN_BITS)+LOWER_FOUR_BITS));
+
+	   *Group_Priority=(uint8)(NVIC->IPR[Local_IRQ_Register] >>  ((Local_IRQ_BYTE_offset * BYTE_IN_BITS)+LOWER_FOUR_BITS));
 
 
  }
