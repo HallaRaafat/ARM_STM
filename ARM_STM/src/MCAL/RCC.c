@@ -96,7 +96,7 @@ typedef struct {
 
 //allocate the size of the pointer only depends on bus not the struct
 // POINTEE (pointing to volatile (bring from memory dont optimaize)) * constant POINTER (RCC)
-volatile RCC_t * const RCC = (volatile RCC_t * const) RCC_BASE_ADDRESS;
+volatile RCC_t * const RCC = ( RCC_t * const) RCC_BASE_ADDRESS;
 
 
 /*
