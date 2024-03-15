@@ -15,7 +15,7 @@
  * @return   : Error status (LED_Ok,LED_NOK)
  */
 
-extern const LED_Cfg_t LEDS_ARR [LED_NUMBERS_];
+extern const LED_Cfg_t LEDS_ARR [_LED_NUMBERS_];
 
 LED_ErrorStatus_t LED_Init(void)
 {
@@ -23,7 +23,7 @@ LED_ErrorStatus_t LED_Init(void)
 	GPIO_Pin_Cfg_t Led ;
 	Led.Mode= GPIO_OUTPUT_PP;
     Led.Speed = GPIO_OUTPUT_SPEED_MED;
-	for (int i =0 ;i <LED_NUMBERS_;i++)
+	for (int i =0 ;i <_LED_NUMBERS_;i++)
 	{
 
         Led.Port = LEDS_ARR[i].Port;

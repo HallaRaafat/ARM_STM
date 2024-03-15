@@ -18,9 +18,10 @@
  */
 typedef enum
 {
-LED_FRONT_RIGHT,
-LED_FRONT_LEFT,
-LED_NUMBERS_
+LED_Green,
+LED_Yellow,
+LED_Red,
+_LED_NUMBERS_
 }LED_Names_t;
 
 
