@@ -30,12 +30,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "diag/trace.h"
-#include "HAL/LED.h"
-#include "MCAL/RCC.h"
-#include "HAL/Switch.h"
+//#include "HAL/LED.h"
+
 #include "LIB/STD_Types.h"
-#include "LIB/Log.h"
-#include "MCAL/Systick.h"
+#include "MCAL/RCC.h"
+#include "OS/Sched.h"
+#include "APP/Traffic.h"
 // ----------------------------------------------------------------------------
 //
 // Standalone STM32F4 empty sample (trace via DEBUG).
@@ -62,23 +62,6 @@
 #include <stdio.h>
 
 
-#ifdef TEST_SYSTICK
-void Led_Set ()
-{
-    static int set=0;
-    if(set==0)
-    {LED_SetState(LED_Green,LED_STATE_ON);
-      set=1;
-    }
-
-    else
-    {  LED_SetState(LED_Green,LED_STATE_OFF);
-    	set=0;
-    }
-
-}
-
-#endif
 
 
 
@@ -87,71 +70,20 @@ int
 main(int argc, char* argv[])
 {
 
-#ifdef  TEST_LED
-	RCC_ManageClock(RCC_CLOCK_HSE_CRYSTAL,RCC_STATE_ENABLE);
-	RCC_SelectSystemClock(RCC_CLOCK_HSE_CRYSTAL);
-	RCC_ConfigurePrescalar(RCC_AHB1,RCC_AHB_PRESC_64);
-	RCC_ControlPeripheral(RCC_AHB1,GPIOA,RCC_STATE_ENABLE);
-   LED_Init();
-   SW_Init();
-   uint8 s1;
 
-  while (1)
-    {
-
-
-
-	  SW_GetState(SW_MUSIC_PLAY,&s1);
-			  if (s1  == SW_STATE_ON)
-			  {
-				  LED_SetState(LED_FRONT_RIGHT,LED_STATE_ON);
-				  LED_SetState(LED_FRONT_LEFT,LED_STATE_OFF);
-			  }
-
-			  else
-			  {
-				  LED_SetState(LED_FRONT_LEFT,LED_STATE_ON);
-				  LED_SetState(LED_FRONT_RIGHT,LED_STATE_OFF);
-			  }
-
-
-
-    }
-
-
-#endif
-
-#ifdef  TEST_SYSTICK
+#ifdef TEST_SCHED
 
 	RCC_ManageClock(RCC_CLOCK_HSI,RCC_STATE_ENABLE);
 	RCC_SelectSystemClock(RCC_CLOCK_HSI);
 
-
-
-	RCC_ControlPeripheral(RCC_AHB1,GPIOA,RCC_STATE_ENABLE);
-
-	LED_Init();
-    SYSTICK_SetTimeMS(1000);
-    SYSTICK_SetCallBack(Led_Set) ;
-    SYSTICK_Start(SYSTICK_CLK_AHB_NO_DEV);
-
-
-  while(1)
-          {
+    Traffic_Init();
 
 
 
-          }
-#endif
-
-#ifdef TEST_SCHED
+	SCHED_Init();
+	SCHED_Start();
 
 
-
-
-  RCC_ControlPeripheral(RCC_AHB1,GPIOA,RCC_STATE_ENABLE);
-
-  LED_Init();
 
 
 
@@ -160,6 +92,7 @@ main(int argc, char* argv[])
 
 
     }
+
 
 
 

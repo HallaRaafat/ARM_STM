@@ -15,7 +15,7 @@
 #define SYSTICK_MAX_VAL       (0x00ffffff)
 #define SYSTICK_MIN_VAL       (0x00000001)
 
-//#define SYS_CLOCK              400000   //HSI clock 16 no dev
+
 #define SYS_CLOCK              16000000   //HSI clock 16 no dev
 #define CLEAR_VAL              55         //any value to clear current
 typedef struct
