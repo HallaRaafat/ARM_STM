@@ -7,13 +7,17 @@
 #include "OS/Sched.h"
 #include "OS/Sched_Runnables.h"
 
-#define TRAFFIC_PERIODICITY_MS     2000
-#define TRAFFIC_INITIAL_DELAY_MS   1000
+//#define TRAFFIC_PERIODICITY_MS     2000
+//#define TRAFFIC_INITIAL_DELAY_MS   1000
+
+#define LCD_PERIODICITY_MS     1
+#define LCD_INITIAL_DELAY_MS   0
 
 
-void Traffic_Runnable();
 
+//void Traffic_Runnable();
 
+void LCD_Runnable();
 
 
 /*
@@ -26,17 +30,21 @@ void Traffic_Runnable();
  */
 const Runnable_t Runnables_Array[_Num_Runnables]=
 {
-
+/*
 [Runnable_Traffic]={
 		                .Periodicity_ms=TRAFFIC_PERIODICITY_MS,
 		                .Delay_ms= TRAFFIC_INITIAL_DELAY_MS,
-		                .Callback=Traffic_Runnable,
-
-
-
+		                .Callback= Traffic_Runnable,
 
                    }
+*/
 
+[Runnable_LCD]={
+						.Periodicity_ms=LCD_PERIODICITY_MS,
+						.Delay_ms= LCD_INITIAL_DELAY_MS,
+						.Callback= LCD_Runnable,
+
+				   }
 
 };
 

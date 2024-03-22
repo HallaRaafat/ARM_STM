@@ -422,7 +422,8 @@ NVIC_Error_t NVIC_GenerateSWInterrupt(uint8 NVIC_IRQ)
 	 *  the Interrupt ID of the required SGI, in the range 0-239. For example, a value of 0x03 specifies interrupt IRQ3.
      */
  if (NVIC_IRQ < IRQ_HIGH_BOUND_LIMIT && NVIC_IRQ >= IRQ_LOW_BOUND_LIMIT)
- { NVIC->STIR = NVIC_IRQ;
+ { //NVIC->STIR = NVIC_IRQ;
+	 NVIC_ControlPendingIRQ(NVIC_IRQ,NVIC_ENABLE);
  Local_ErrorState= NVIC_OK;
  }
 
