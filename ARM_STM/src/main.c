@@ -1,37 +1,10 @@
-/*
- * This file is part of the µOS++ distribution.
- *   (https://github.com/micro-os-plus)
- * Copyright (c) 2014 Liviu Ionescu.
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom
- * the Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
 
-// ----------------------------------------------------------------------------
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "diag/trace.h"
 //#include "HAL/LED.h"
-
+#include "HAL/LCD.h"
 #include "LIB/STD_Types.h"
 #include "MCAL/RCC.h"
 #include "OS/Sched.h"
@@ -57,7 +30,7 @@
 #pragma GCC diagnostic ignored "-Wreturn-type"
 //#define TEST_LED
 //#define TEST_SYSTICK
-#define TEST_SCHED
+//#define TEST_SCHED
 
 #include <stdio.h>
 
@@ -76,7 +49,7 @@ main(int argc, char* argv[])
 	RCC_ManageClock(RCC_CLOCK_HSI,RCC_STATE_ENABLE);
 	RCC_SelectSystemClock(RCC_CLOCK_HSI);
 
-    Traffic_Init();
+    //Traffic_Init();
 
 
 
@@ -88,6 +61,18 @@ main(int argc, char* argv[])
 
 
 #endif
+
+
+	RCC_ManageClock(RCC_CLOCK_HSI,RCC_STATE_ENABLE);
+	RCC_SelectSystemClock(RCC_CLOCK_HSI);
+
+	RCC_ControlPeripheral(RCC_AHB1,GPIOA,RCC_STATE_ENABLE);
+
+	LCD_InitAsync();
+	LCD_WriteChar('H');
+
+while(1){}
+
 
 
 

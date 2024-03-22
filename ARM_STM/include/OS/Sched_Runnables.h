@@ -11,11 +11,13 @@
 //Change the ticktime for the value of schedular in (ms)
 // max 1000 ms min 1 ms
 
-#define SCHED_TICK_TIME 1000
+#define SCHED_TICK_TIME 1
+
+
 typedef enum
 {
-	Runnable_Traffic,
-
+	//Runnable_Traffic,
+   Runnable_LCD,
   _Num_Runnables
 }Runnables;
 
