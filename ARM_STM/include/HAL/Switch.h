@@ -11,7 +11,7 @@
 #include "LIB/STD_Types.h"
 #include "HAL/Switch.h"
 
-#include "HAL/Switch_Cfg.h"
+#include "HAL/CFG/Switch_Cfg.h"
 #define SW_ACTIVESTATE_PU           0x00000008                //LED CONNECTION FORWARD
 #define SW_ACTIVESTATE_PD           0x00000010
 

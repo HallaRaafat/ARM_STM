@@ -5,8 +5,8 @@
  *      Author: Halla Raafat
  */
 
+#include <HAL/CFG/Switch_Cfg.h>
 #include "MCAL/GPIO.h"
-#include "HAL/Switch_Cfg.h"
 #include "HAL/Switch.h"
 
 

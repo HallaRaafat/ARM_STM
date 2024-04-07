@@ -68,11 +68,13 @@ main(int argc, char* argv[])
 
 	RCC_ControlPeripheral(RCC_AHB1,GPIOA,RCC_STATE_ENABLE);
 
-	LCD_InitAsync();
-	LCD_WriteChar('H');
+    LCD_InitAsync();
+	//LCD_WriteChar('H');
 
-while(1){}
+	SCHED_Error_t SCHED_Init();
 
+	SCHED_Error_t SCHED_Start();
+	// LCD_WriteChar( 'H');
 
 
 

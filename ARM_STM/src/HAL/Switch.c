@@ -6,8 +6,8 @@
  */
 
 
+#include "HAL/CFG/Switch_Cfg.h"
 #include "HAL/Switch.h"
-#include "HAL/Switch_Cfg.h"
 #include "MCAL/GPIO.h"
 
 const SW_Cfg_t SW_ARR [SW_NUMBERS_];
