@@ -8,7 +8,7 @@
 #ifndef LED_H_
 #define LED_H_
 
-#include "HAL/LED_Cfg.h"
+#include "HAL/CFG/LED_Cfg.h"
 #include "LIB/STD_Types.h"
 
 #define LED_CONN_FORWARD           0x00000000                //LED CONNECTION FORWARD

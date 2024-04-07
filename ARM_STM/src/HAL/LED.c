@@ -5,9 +5,9 @@
  *      Author: Halla Raafat
  */
 
+#include "HAL/CFG/LED_Cfg.h"
 #include "HAL/LED.h"
 #include "MCAL/GPIO.h"
-#include "HAL/LED_Cfg.h"
 
 /*
  * @brief    : function to initialize the pin based on user configuration

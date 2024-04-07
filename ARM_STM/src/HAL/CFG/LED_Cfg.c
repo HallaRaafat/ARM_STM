@@ -4,8 +4,8 @@
  *  Created on: Feb 19, 2024
  *      Author: Halla Raafat
  */
+#include <HAL/CFG/LED_Cfg.h>
 #include "MCAL/GPIO.h"
-#include "HAL/LED_Cfg.h"
 #include "HAL/LED.h"
 
 
