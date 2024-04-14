@@ -47,16 +47,37 @@
 
 #endif
 
-
+typedef void (*LCD_CallBack_t)(void);
 
 typedef struct
 {
 	uint8 RequestType;  // write or clear or set cursor
 	uint8 State;
-	//callback?
+	LCD_CallBack_t CallBack; //callback
 
 }LCD_Request_t;
 
+typedef struct
+{
+     uint8 * Data;
+    uint8 Length;
+    uint8 Index;
+}LCD_WriteRequest_t;
+
+typedef enum
+{
+
+    Write,
+    Clear_Screen,
+    Set_CursorPosition,
+	Nth
+}LCD_RequestTypes_t;
+
+typedef enum
+{
+    Available,
+    Busy,
+}LCD_RequestStates_t;
 
 typedef enum{
 	PowerOn,
@@ -77,6 +98,10 @@ typedef enum{
 
 static LCD_State_t LCD_State = LCD_Off;
 
+static LCD_Request_t Request;
+static LCD_WriteRequest_t WriteRequest;
+
+
 
 
 extern LCD_PinCfg_t LCD_Cfg;
@@ -84,9 +109,12 @@ extern LCD_PinCfg_t LCD_Cfg;
 
 
 static void LCD_WriteCommand(uint8 Cmd);
- void LCD_WriteChar( uint8 data);
+static void LCD_WriteChar( uint8 data);
 static void LCD_InitStateMachine();
 static void LCD_SendByte(uint8 Byte  );
+static void  LCD_OperationProcess();
+static void Write_String();
+
 
 static void LCD_WriteCommand(uint8 Cmd)
 {
@@ -96,7 +124,7 @@ static void LCD_WriteCommand(uint8 Cmd)
 
 
 }
-void LCD_WriteChar( uint8 data)
+static void LCD_WriteChar( uint8 data)
 {
 	GPIO_SetPinValue(LCD_Cfg.RegSelect.Port,LCD_Cfg.RegSelect.Pin,GPIO_OUTPUT_HIGH);
 	GPIO_SetPinValue(LCD_Cfg.Read_Write.Port,LCD_Cfg.Read_Write.Pin,GPIO_OUTPUT_LOW);
@@ -167,10 +195,11 @@ LCD_Error_t LCD_InitAsync()
      GPIO_InitPin(&LCD_Pin);
  }
 
-
+ GPIO_SetPinValue(LCD_Cfg.Enable.Port,LCD_Cfg.Enable.Pin,GPIO_OUTPUT_LOW);
 	LCD_State=LCD_Init;
 	Local_ErrorState=LCD_OK;// fix error from GPIO
-			return Local_ErrorState;
+
+	return Local_ErrorState;
 
 }
 
@@ -190,7 +219,7 @@ void LCD_Runnable()
 		        break;
 	case LCD_Operation:
 		         //depend on request
-
+                 LCD_OperationProcess();
 		        break;
 	default:
 		      break;
@@ -222,7 +251,7 @@ switch(InitState)
 			case FunctionSet:
                           Counter++;
 
-                         if(Counter>CONTROL_ENABLE_COUNT)
+                         if(Counter==CONTROL_ENABLE_COUNT)
                          {   InitState=DisplayOnOff;
                         	 Counter=0;
 
@@ -233,7 +262,7 @@ switch(InitState)
 			case DisplayOnOff:
 							Counter++;
 
-							if(Counter>CONTROL_ENABLE_COUNT)
+							if(Counter==CONTROL_ENABLE_COUNT)
 							{   InitState=DisplayOnOff;
 							 Counter=0;
 
@@ -243,7 +272,7 @@ switch(InitState)
 			case DisplayClear:
 							Counter++;
 
-							if(Counter>CONTROL_ENABLE_COUNT)
+							if(Counter==CONTROL_ENABLE_COUNT)
 							{   InitState=DisplayOnOff;
 							 Counter=0;
 
@@ -253,7 +282,7 @@ switch(InitState)
 			case EntryModeSet:
 							Counter++;
 
-							if(Counter>CONTROL_ENABLE_COUNT)
+							if(Counter==CONTROL_ENABLE_COUNT)
 							{   InitState=DisplayOnOff;
 							 Counter=0;
 
@@ -269,7 +298,40 @@ switch(InitState)
 	}
 }
 
+static void LCD_OperationProcess()
+{
+if (Request.RequestType== Write)
+{
+   Write_String();
+}
 
+}
+
+static void Write_String()
+{
+
+if(WriteRequest.Index< WriteRequest.Length)
+{
+	LCD_WriteChar(WriteRequest.Data[WriteRequest.Index]);
+	static Counter=0;
+	Counter++;
+
+	if (Counter ==CONTROL_ENABLE_COUNT)
+	{  WriteRequest.Index++;
+		Counter=0;
+
+	}
+}
+else
+{
+	Request.State=Available;
+
+
+}
+
+
+
+}
 LCD_Error_t LCD_GetState(uint8 * Ptr_LCDState)
 {
 	LCD_Error_t Local_ErrorState=LCD_NOK;
@@ -286,10 +348,17 @@ LCD_Error_t LCD_ClearScreenAsync()
 		return Local_ErrorState;
 
 }
-LCD_Error_t LCD_WriteStringAsync(uint8 * String , uint8 Length ,uint8 PosX ,uint8 PosY )
+LCD_Error_t LCD_WriteStringAsync( uint8 * String , uint8 Length ,uint8 PosX ,uint8 PosY )
 {
 	LCD_Error_t Local_ErrorState=LCD_NOK;
-
+   if (Request.State==Available)
+   {
+	   Request.State=Busy;
+	   Request.RequestType=Write;
+	   WriteRequest.Data=String;
+	   WriteRequest.Length=Length;
+	   WriteRequest.Index=0;
+   }
 
 		return Local_ErrorState;
 

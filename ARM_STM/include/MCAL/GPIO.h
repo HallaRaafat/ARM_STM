@@ -43,6 +43,28 @@
 #define GPIO_PIN15      0x0000000F
 
 /******************************************************************************************/
+/*                                  AF                                                 */
+/******************************************************************************************/
+
+
+#define GPIO_AF0       0x00000000
+#define GPIO_AF1       0x00000001
+#define GPIO_AF2       0x00000002
+#define GPIO_AF3       0x00000003
+#define GPIO_AF4       0x00000004
+#define GPIO_AF5       0x00000005
+#define GPIO_AF6       0x00000006
+#define GPIO_AF7       0x00000007
+#define GPIO_AF8       0x00000008
+#define GPIO_AF9       0x00000009
+#define GPIO_AF10      0x0000000A
+#define GPIO_AF11      0x0000000B
+#define GPIO_AF12      0x0000000C
+#define GPIO_AF13      0x0000000D
+#define GPIO_AF14      0x0000000E
+#define GPIO_AF15      0x0000000F
+
+/******************************************************************************************/
 /*                                  Modes                                                 */
 /******************************************************************************************/
 
@@ -111,4 +133,6 @@ GPIO_ErrorStatus_t GPIO_InitPin(GPIO_Pin_Cfg_t * Ptr_PinObject);
 GPIO_ErrorStatus_t GPIO_SetPinValue ( void * Port ,uint32 Pin ,uint32 Value);
 
 GPIO_ErrorStatus_t GPIO_GetPinValue ( void * Port ,uint32 Pin,uint8 * Get_Value);
+GPIO_ErrorStatus_t GPIO_CFG_AF ( void * Port ,uint32 Pin,uint32 AF_Num);
+
 #endif /* GPIO_H_ */
