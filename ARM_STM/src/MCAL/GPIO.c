@@ -76,7 +76,7 @@ peripheral functions
 
 #define TWO_BIT_MASK 0x00000003
 #define ONE_BIT_MASK 0x00000001
-
+#define GPIO_AF_MASK 0x0000000f
 #define MODE_MASK   0x00000003
 #define OTYPE_MASK  0x00000004
 #define PUPDR_MASK  0x00000018
@@ -210,4 +210,31 @@ GPIO_ErrorStatus_t GPIO_GetPinValue ( void * Port ,uint32 Pin ,uint8 * Get_Value
     *Get_Value =(  ( ( (volatile GPIO_PORT_t *)  Port ) ->IDR >> Pin )& ONE_BIT_MASK  );
 	return Local_ReturnErrorState;
 
+}
+
+GPIO_ErrorStatus_t GPIO_CFG_AF ( void * Port ,uint32 Pin,uint32 AF_Num)
+{
+
+	GPIO_ErrorStatus_t Local_ReturnErrorState=GPIO_NOK;
+	uint32 Local_AFRValue=0;
+if (Pin<= GPIO_PIN7)
+{
+	Local_AFRValue=((volatile GPIO_PORT_t *)  Port) ->AFRL;
+	// Clear 4 bits of this pin
+    Local_AFRValue&=~ (GPIO_AF_MASK<<(Pin*4));
+    Local_AFRValue |= (AF_Num<<(Pin*4));
+    ((volatile GPIO_PORT_t *)  Port) ->AFRL=Local_AFRValue;
+
+	}
+else
+{
+	Local_AFRValue=((volatile GPIO_PORT_t *)  Port) ->AFRH;
+
+		// Clear 4 bits of this pin
+	    Local_AFRValue&=~ (GPIO_AF_MASK<<((Pin-8)*4));
+	    Local_AFRValue |= (AF_Num<<((Pin-8)*4));
+	    ((volatile GPIO_PORT_t *)  Port) ->AFRH=Local_AFRValue;
+
+	}
+		return Local_ReturnErrorState;
 }

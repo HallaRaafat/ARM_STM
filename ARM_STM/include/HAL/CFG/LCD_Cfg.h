@@ -37,7 +37,7 @@
  *                     LCD_DISABLE
  */
 
-#define LCD_CURSOR     LCD_ENABLE
+#define LCD_CURSOR     LCD_DISABLE
 /*
  * Configure Blinking  : LCD_ENABLE
  *                     LCD_DISABLE
@@ -61,7 +61,7 @@
  * Configure SHIFTING   : LCD_ENABLE
  *                        LCD_DISABLE
  */
-#define LCD_SHIFT          LCD_DISABLE
+#define LCD_SHIFT          LCD_ENABLE
 /*
  * Configure Font size    : LCD_5X7
  *                        LCD_5X10

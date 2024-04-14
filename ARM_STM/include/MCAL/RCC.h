@@ -98,8 +98,8 @@
 #define		SPI1     0x00001000 //APB2
 #define		SDIO     0x00000800  //APB2
 #define		ADC1     0x00000100  //APB2
-#define		USART6   0x00000020   //APB2
-#define		USART1   0x00000010   //APB2
+#define		RCC_USART6   0x00000020   //APB2
+#define		RCC_USART1   0x00000010   //APB2
 #define		TIM1     0x00000001    //APB2
 
 
@@ -107,7 +107,7 @@
 #define		I2C3     0x00800000 //APB1
 #define		I2C2     0x00400000 //APB1
 #define		I2C1     0x00200000 //APB1
-#define		USART2   0x00020000  //APB1
+#define		RCC_USART2   0x00020000  //APB1
 #define		SPI3     0x00008000   //APB1
 #define		SPI2     0x00004000   //APB1
 #define		WWDG     0x00000800   //APB1
