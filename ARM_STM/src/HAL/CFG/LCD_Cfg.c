@@ -4,7 +4,7 @@
  *  Created on: Mar 21, 2024
  *  Author    : Halla Raafat
  */
-
+#ifdef LCD_HALLA
 #include <HAL/CFG/LCD_Cfg.h>
 #include "HAL/LCD.h"
 
@@ -31,3 +31,4 @@ LCD_PinCfg_t LCD_Cfg=
 				.DB7={ .Port=GPIO_PORTA,.Pin= GPIO_PIN9 },
 
 		};
+#endif

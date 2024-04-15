@@ -4,7 +4,7 @@
  *  Created on: Mar 21, 2024
  *      Author: Halla Raafat
  */
-
+#ifdef LCD_HALLA
 #ifndef LCD_H_
 #define LCD_H_
 
@@ -40,3 +40,4 @@ LCD_Error_t LCD_Write_NumberAsync(uint32 Number);
 
 
 #endif /* LCD_H_ */
+#endif

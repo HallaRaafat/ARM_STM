@@ -4,7 +4,7 @@
  *  Created on: Mar 21, 2024
  *      Author: Halla Raafat
  */
-
+#ifdef LCD_HALLA
 #ifndef LCD_CFG_H_
 #define LCD_CFG_H_
 
@@ -103,3 +103,4 @@ typedef struct
 
 
 #endif /* LCD_CFG_H_ */
+#endif

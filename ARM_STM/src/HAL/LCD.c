@@ -4,6 +4,7 @@
  *  Created on: Mar 21, 2024
  *      Author: Halla Raafat
  */
+#ifdef LCD_HALLA
 
 #include "HAL/CFG/LCD_Cfg.h"
 #include "HAL/LCD.h"
@@ -450,6 +451,6 @@ GPIO_SetPinValue(LCD_Cfg.Enable.Port,LCD_Cfg.Enable.Pin,GPIO_OUTPUT_LOW);
 
 
 
-
+#endif
 
 

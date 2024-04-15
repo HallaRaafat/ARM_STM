@@ -13,8 +13,8 @@
 
 const SW_Cfg_t SW_ARR [SW_NUMBERS_]=
 {
-[SW_MUSIC_PLAY]={ .Port = GPIO_PORTA,
-		          .Pin = GPIO_PIN1,
+[SW_MUSIC_PLAY]={ .Port = GPIO_PORTB,
+		          .Pin = GPIO_PIN5,
 				  .ActiveState = SW_ACTIVESTATE_PU
 				}
 

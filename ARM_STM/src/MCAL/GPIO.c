@@ -82,6 +82,7 @@ peripheral functions
 #define PUPDR_MASK  0x00000018
 
 #define TWO_BITS      2
+#define SHIFT_3BITS   3
 #define PORT_SIZE   0x00000010
 typedef struct
 {
@@ -152,6 +153,7 @@ GPIO_ErrorStatus_t GPIO_InitPin(GPIO_Pin_Cfg_t * Ptr_PinObject)
     uint32 Local_PUPDR = ((volatile GPIO_PORT_t *)  (Ptr_PinObject->Port))   -> PUPDR;
     uint32 Local_OSPEEDR=((volatile GPIO_PORT_t *)  (Ptr_PinObject -> Port)) ->OSPEEDR;
 
+    uint32 Local_PUPDRMODE= (  (((Ptr_PinObject->Mode)& PUPDR_MASK)  >>SHIFT_3BITS ) & TWO_BIT_MASK);
     uint32 Local_ClearBits = 0xffffffff ;
     Local_ClearBits &=~ (TWO_BIT_MASK<<( (Ptr_PinObject->Pin) *TWO_BITS ) ); // shift 0x3 by (pin number * 2 )
     // to clear the corresponding 2 bits to the pin number
@@ -162,10 +164,13 @@ GPIO_ErrorStatus_t GPIO_InitPin(GPIO_Pin_Cfg_t * Ptr_PinObject)
     Local_OTYPER &=~ (ONE_BIT_MASK<< Ptr_PinObject->Pin);
     Local_OTYPER |=  (((Ptr_PinObject->Mode)& OTYPE_MASK )<< (Ptr_PinObject->Pin));
 
+  //  uint32 Loc_Test=(Ptr_PinObject->Mode)& PUPDR_MASK;
+
     // to clear the corresponding 2 bits to the pin number
     Local_PUPDR &=Local_ClearBits; // shift 0x3 by (pin number * 2 )
       // set the moder by mode bits and shift them depend on pin number
-    Local_PUPDR |= (((Ptr_PinObject->Mode)& PUPDR_MASK)<<(Ptr_PinObject->Pin)*TWO_BITS);
+  //  Local_PUPDR |= (((Ptr_PinObject->Mode)& PUPDR_MASK)<<(Ptr_PinObject->Pin)*TWO_BITS);
+    Local_PUPDR |= (Local_PUPDRMODE<<((Ptr_PinObject->Pin)*TWO_BITS));
 
 
     // to clear the corresponding 2 bits to the pin number
