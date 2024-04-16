@@ -184,9 +184,16 @@ void APP_Runnable(void)
           CLCD_WriteStringAsynch(dateString,10);
       if (FIRST_SWITCH_STATUS==HSWITCH_PRESSED)
       {
-    	  FormatTimeToString(currentTime, Clockstring);
+    	 /* FormatTimeToString(currentTime, Clockstring);
     	  	   CLCD_SetCursorAsynch(LINE2,COL1);
     	  	   CLCD_WriteStringAsynch(Clockstring,11);
+    	  	 */
+
+         Stopwatch.hour=0;
+         Stopwatch.minute=0;
+         Stopwatch.second=0;
+         Stopwatch.partofsecond=0;
+
       }
 	  /* FormatTimeToString(currentTime, Clockstring);
 	   CLCD_SetCursorAsynch(LINE2,COL1);
