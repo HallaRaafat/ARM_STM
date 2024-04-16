@@ -70,14 +70,14 @@ const Runnable_t Runnables_Array[_Num_Runnables]=
 						.Callback= APP_Runnable,
 
 				   },
-/*
+
 [Runnable_SWITCH]={
 						.Periodicity_ms=HSWITCH_PERIODICITY_MS,
 						.Delay_ms= LCD_INITIAL_DELAY_MS,
 						.Callback= Runnable_HSWITCH,
 
 				   },
-				   */
+
 
 
 [Runnable__Timer_Update]={

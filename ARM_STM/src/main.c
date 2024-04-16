@@ -12,7 +12,7 @@
 #include "MCAL/GPIO.h"
 #include "MCAL/USART.h"
 #include "HAL/CLCD.h"
-//#include "HAL/HSWITCH.h"
+#include "HAL/HSWITCH.h"
 #include "HAL/Switch.h"
 #include "MCAL/STM32F401C_IRQ.h"
 #include "MCAL/NVIC.h"
@@ -176,25 +176,35 @@ void APP_Runnable(void)
 
 {
       CLCD_ClearDisplayAsynch();
+      uint8 FIRST_SWITCH_STATUS=0;
+      HSWITCH_GetStatus(HSWITCH_1,&FIRST_SWITCH_STATUS);
 
 	 // uint8 dateString[11]; // Buffer to hold the date string (YYYY-MM-DD\0)
       ConvertDateToString(Date, dateString);
-      CLCD_WriteStringAsynch(dateString,10);
-
+          CLCD_WriteStringAsynch(dateString,10);
+      if (FIRST_SWITCH_STATUS==HSWITCH_PRESSED)
+      {
+    	  FormatTimeToString(currentTime, Clockstring);
+    	  	   CLCD_SetCursorAsynch(LINE2,COL1);
+    	  	   CLCD_WriteStringAsynch(Clockstring,11);
+      }
 	  /* FormatTimeToString(currentTime, Clockstring);
 	   CLCD_SetCursorAsynch(LINE2,COL1);
 	   CLCD_WriteStringAsynch(Clockstring,11);
 
  */
+      else if (FIRST_SWITCH_STATUS==HSWITCH_RELEASED)
+      {
       FormatTimeToString(Stopwatch, StopWatchString);
      	   CLCD_SetCursorAsynch(LINE2,COL1);
      	   CLCD_WriteStringAsynch(StopWatchString,11);
+      }
 	//   CLCD_WriteStringAsynch(Timestring,11);
 
 
 	   // CLCD_WriteStringAsynch("W",1);
 
-	 //uint8 FIRST_SWITCH_STATUS=0;
+
 	// SW_MUSIC_PLAY
 	//HSWITCH_GetStatus(HSWITCH_1,&FIRST_SWITCH_STATUS);
 /*
