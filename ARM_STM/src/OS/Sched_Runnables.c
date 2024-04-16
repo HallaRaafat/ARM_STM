@@ -15,7 +15,7 @@
 
 #define HSWITCH_PERIODICITY_MS 5
 
-#define APP_PERIODICITY_MS     100
+#define APP_PERIODICITY_MS     150
 
 #define TIMER_PERIODICITY_MS    10
 #define TIMER_INITIAL_DELAY_MS   1
@@ -70,14 +70,14 @@ const Runnable_t Runnables_Array[_Num_Runnables]=
 						.Callback= APP_Runnable,
 
 				   },
-/*
+
 [Runnable_SWITCH]={
 						.Periodicity_ms=HSWITCH_PERIODICITY_MS,
 						.Delay_ms= LCD_INITIAL_DELAY_MS,
 						.Callback= Runnable_HSWITCH,
 
 				   },
-				   */
+
 
 
 [Runnable__Timer_Update]={

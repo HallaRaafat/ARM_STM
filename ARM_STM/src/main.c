@@ -12,7 +12,7 @@
 #include "MCAL/GPIO.h"
 #include "MCAL/USART.h"
 #include "HAL/CLCD.h"
-//#include "HAL/HSWITCH.h"
+#include "HAL/HSWITCH.h"
 #include "HAL/Switch.h"
 #include "MCAL/STM32F401C_IRQ.h"
 #include "MCAL/NVIC.h"
@@ -66,10 +66,11 @@ typedef struct {
 
 	Time_t currentTime={.minute=11,.hour=11,.second=0,.partofsecond=10};
     Time_t Stopwatch={.minute=0,.hour=0,.second=0,.partofsecond=0};
-    Date_t Date ={.Year=1999,.Month=11,.Day=29};
+    Date_t Date ={.Year=2024,.Month=4,.Day=17};
 
 
 	uint8 Time [12];
+uint8	Increment_Day_Flag=0;
 void Increment_Date(Date_t * Date )
 {
 	 uint32 daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -92,33 +93,46 @@ void Increment_Date(Date_t * Date )
 
 
 }
-void Increment_Time(Time_t * Timer,Date_t * Date)
-	{
 
-	Timer->partofsecond+=10;
+
+void Increment_Timer(Time_t * Timer)
+{
+
+	Timer->partofsecond+=1;
+
     if (Timer->partofsecond>=100)
     {
     	Timer->partofsecond = 0;
     	Timer->second++;
-        if (Timer->second>= 60)
-        {
-        	Timer->second= 0;
-        	Timer->minute++;
-        }
-        if (Timer->minute >= 60)
-        {
-        	Timer->minute = 0;
-        	Timer->hour++;
-        }
-        if (Timer->hour >= 24)
-        {
-            Timer->hour = 0;
-            Date->Day++;
-        }
+
+
     }
+    if (Timer->second>= 60)
+         {
+         	Timer->second= 0;
+         	Timer->minute++;
+         }
+         if (Timer->minute >= 60)
+         {
+         	Timer->minute = 0;
+         	Timer->hour++;
+         }
+         if (Timer->hour >= 24)
+         {
+             Timer->hour = 0;
+
+         }
+}
+void Increment_StopWatch(Time_t * Timer)
+{
+Increment_Timer(Timer);
+
+}
+void Increment_Clock(Time_t * Timer,Date_t * Date)
+	{
+    Increment_Timer(Timer);
 
     Increment_Date(Date);
-
 	}
 void ConvertDigitToChar(uint8 digit, uint8 *buffer) {
     buffer[0] = (digit / 10) + '0';
@@ -139,33 +153,65 @@ void FormatTimeToString(Time_t time, uint8 *buffer) {
 
 void ConvertDateToString(Date_t date, uint8 *buffer)
 {
-    ConvertDigitToChar(date.Year / 1000, buffer);
-    ConvertDigitToChar((date.Year / 100) % 10, buffer + 2);
-    ConvertDigitToChar((date.Year / 10) % 10, buffer + 4);
-    ConvertDigitToChar(date.Year % 10, buffer + 6);
-    buffer[4] = '-'; // Separator between year and month
-    ConvertDigitToChar(date.Month, buffer + 8);
-    buffer[10] = '-'; // Separator between month and day
-    ConvertDigitToChar(date.Day, buffer + 11);
-    buffer[13] = '\0'; // Null-terminate the string
+   // ConvertDigitToChar(date.Year / 1000, buffer);
+    buffer[0]=date.Year / 1000+'0';
+    buffer[1]=(date.Year / 100) % 10+'0';
+    buffer[2]=(date.Year / 10) % 10+'0';
+    buffer[3]=date.Year % 10+'0';
+   // ConvertDigitToChar((date.Year / 100) % 10, buffer + 2);
+   // ConvertDigitToChar((date.Year / 10) % 10, buffer + 4);
+  //  ConvertDigitToChar(date.Year % 10, buffer + 6);
+    buffer[4] = '/'; // Separator between year and month
+    ConvertDigitToChar(date.Month, buffer + 5);
+    buffer[7] = '/'; // Separator between month and day
+    ConvertDigitToChar(date.Day, buffer + 8);
+    buffer[10] = '\0'; // Null-terminate the string
 }
+
+uint8 Clockstring[12];
+uint8 StopWatchString[12];
+
+uint8 dateString[11];
 void APP_Runnable(void)
+
 {
-   //CLCD_ClearDisplayAsynch();
+      CLCD_ClearDisplayAsynch();
+      uint8 FIRST_SWITCH_STATUS=0;
+      HSWITCH_GetStatus(HSWITCH_1,&FIRST_SWITCH_STATUS);
 
 	 // uint8 dateString[11]; // Buffer to hold the date string (YYYY-MM-DD\0)
-      uint8 Timestring[12];
-	   // ConvertDateToString(Date, dateString);
-	    FormatTimeToString(currentTime, Timestring);
+      ConvertDateToString(Date, dateString);
+          CLCD_WriteStringAsynch(dateString,10);
+      if (FIRST_SWITCH_STATUS==HSWITCH_PRESSED)
+      {
+    	 /* FormatTimeToString(currentTime, Clockstring);
+    	  	   CLCD_SetCursorAsynch(LINE2,COL1);
+    	  	   CLCD_WriteStringAsynch(Clockstring,11);
+    	  	 */
 
-	   // CLCD_WriteStringAsynch(dateString,11);
-	    CLCD_SetCursorAsynch(LINE2,COL1);
-	   // CLCD_WriteStringAsynch(Timestring,11);
+         Stopwatch.hour=0;
+         Stopwatch.minute=0;
+         Stopwatch.second=0;
+         Stopwatch.partofsecond=0;
+
+      }
+	  /* FormatTimeToString(currentTime, Clockstring);
+	   CLCD_SetCursorAsynch(LINE2,COL1);
+	   CLCD_WriteStringAsynch(Clockstring,11);
+
+ */
+      else if (FIRST_SWITCH_STATUS==HSWITCH_RELEASED)
+      {
+      FormatTimeToString(Stopwatch, StopWatchString);
+     	   CLCD_SetCursorAsynch(LINE2,COL1);
+     	   CLCD_WriteStringAsynch(StopWatchString,11);
+      }
+	//   CLCD_WriteStringAsynch(Timestring,11);
 
 
-	    CLCD_WriteStringAsynch("W",1);
+	   // CLCD_WriteStringAsynch("W",1);
 
-	 //uint8 FIRST_SWITCH_STATUS=0;
+
 	// SW_MUSIC_PLAY
 	//HSWITCH_GetStatus(HSWITCH_1,&FIRST_SWITCH_STATUS);
 /*
@@ -199,8 +245,8 @@ void Runnable_Timer()
 {
 //	currentTime.partofsecond+=10;
 	//Stopwatch.partofsecond+=10;
-	Increment_Time(&currentTime,&Date);
-
+	Increment_Clock(&currentTime,&Date);
+    Increment_StopWatch(&Stopwatch);
 
 }
 int

@@ -19,7 +19,7 @@ typedef enum
 	//Runnable_Traffic,
    Runnable_LCD,
    Runnable_APP,
-   //Runnable_SWITCH,
+   Runnable_SWITCH,
    Runnable__Timer_Update,
   _Num_Runnables
 }Runnables;
