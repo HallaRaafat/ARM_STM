@@ -19,7 +19,7 @@
 #define EIGHT_BIT_MODE 0x00000008
 #define FOUR_BIT_MODE  0x00000004
 
-#define CLCD_FUNCTION_SET_8BIT               0x38                //0b0000111000
+#define CLCD_FUNCTION_SET_8BIT               0x38                //0b0011 1000
 #define CLCD_FUNCTION_SET_4BIT               0x20                //0b0000100000
 #define CLCD_CLEAR_DISPLAY                   0x01                //0b0000000001
 #define CLCD_RETURN_HOME                     0x03                //0b0000000011
@@ -131,7 +131,7 @@ static CLCD_enuErrorStatus_t CLCD_Write_Proc(void);
 static CLCD_enuErrorStatus_t CLCD_SetPosition_Proc(void);
 static CLCD_enuErrorStatus_t CLCD_WriteNum_Proc(void);
 
-
+static uint8 Num_Buff[16];
 
 
 
@@ -578,7 +578,7 @@ CLCD_enuErrorStatus_t CLCD_WriteStringAsynch(uint8 * Ptr_string,uint8 Length)
 CLCD_enuErrorStatus_t CLCD_WriteNumAsynch(uint32 NUM)
 {
 	CLCD_enuErrorStatus_t Ret_enuErrorStatusCLCD = CLCD_enuOK;
-	static uint8 Num_Buff[16];
+
 	uint8 Loc_Count=0;
 	uint8 Loc_index=0;
 	uint32 Loc_temp=NUM;
@@ -587,6 +587,7 @@ CLCD_enuErrorStatus_t CLCD_WriteNumAsynch(uint32 NUM)
 {
 	if(CLCDState==CLCD_Operation && UserRequest[Idx].state==CLCD_Ready)
 	{
+
 		UserRequest[Idx].state=CLCD_Busy;
 		UserRequest[Idx].Type=CLCD_Write;
 		if (NUM==0)
@@ -622,6 +623,7 @@ CLCD_enuErrorStatus_t CLCD_WriteNumAsynch(uint32 NUM)
 CLCD_enuErrorStatus_t CLCD_SetCursorAsynch(uint8 XPOS,uint8 YPOS)
 {
 	CLCD_enuErrorStatus_t Ret_enuErrorStatusCLCD = CLCD_enuOK;
+
 	for(uint8 Idx=0;Idx<BUFFER_SIZE;Idx++)
 {
 	if ((CLCDState==CLCD_Operation) && (UserRequest[Idx].state==CLCD_Ready))

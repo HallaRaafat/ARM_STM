@@ -10,15 +10,16 @@
 //#define TRAFFIC_PERIODICITY_MS     2000
 //#define TRAFFIC_INITIAL_DELAY_MS   1000
 
-#define LCD_PERIODICITY_MS     2
+#define LCD_PERIODICITY_MS     21
 #define LCD_INITIAL_DELAY_MS   0
 
 #define HSWITCH_PERIODICITY_MS 5
 
-#define APP_PERIODICITY_MS     150
+#define APP_PERIODICITY_MS     1000
 
-#define TIMER_PERIODICITY_MS    10
+#define TIMER_PERIODICITY_MS    1
 #define TIMER_INITIAL_DELAY_MS   1
+
 
 
 //void Traffic_Runnable();
@@ -29,6 +30,7 @@ void RunnableLCD();
 void APP_Runnable();
 void Runnable_HSWITCH();
 void Runnable_Timer();
+void Runnable_Clock_Update();
 /*
  * 1. Write the prototype of the call back function before the array just to compile
  * 2. Fill the array as the priorties depends on the enum sequence in .h file
@@ -80,10 +82,19 @@ const Runnable_t Runnables_Array[_Num_Runnables]=
 
 
 
-[Runnable__Timer_Update]={
+[Runnable_Timer_Update]={
 						.Periodicity_ms=TIMER_PERIODICITY_MS,
 						.Delay_ms= TIMER_INITIAL_DELAY_MS,
 						.Callback= Runnable_Timer,
+
+				   },
+
+
+
+[Runnable_Clock_Stop_Update]={
+						.Periodicity_ms=50,
+						.Delay_ms= 1,
+						.Callback= Runnable_Clock_Update,
 
 				   }
 };

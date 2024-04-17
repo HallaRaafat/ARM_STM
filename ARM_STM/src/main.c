@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "diag/trace.h"
@@ -16,19 +14,6 @@
 #include "HAL/Switch.h"
 #include "MCAL/STM32F401C_IRQ.h"
 #include "MCAL/NVIC.h"
-// ----------------------------------------------------------------------------
-//
-// Standalone STM32F4 empty sample (trace via DEBUG).
-//
-// Trace support is enabled by adding the TRACE macro definition.
-// By default the trace messages are forwarded to the DEBUG output,
-// but can be rerouted to any device or completely suppressed, by
-// changing the definitions required in system/src/diag/trace-impl.c
-// (currently OS_USE_TRACE_ITM, OS_USE_TRACE_SEMIHOSTING_DEBUG/_STDOUT).
-//
-
-// ----- main() ---------------------------------------------------------------
-
 // Sample pragmas to cope with warnings. Please note the related line at
 // the end of this function, used to pop the compiler diagnostics status.
 #pragma GCC diagnostic push
@@ -41,275 +26,282 @@
 
 #include <stdio.h>
 
-void Set_Led()
-{
-	LED_SetState(LED_Red,LED_STATE_ON);
-}
-void Set_Led2()
-{
-	LED_SetState(LED_Yellow,LED_STATE_ON);
-}
-typedef struct
-{
-	uint8 Day;
-	uint8 Month;
-	uint32 Year;
-
-}Date_t;
-typedef struct {
-	uint8 minute ;
-	uint8 second ;
-	uint8 hour;
-	uint8 partofsecond;
-	}Time_t;
-
-
-	Time_t currentTime={.minute=11,.hour=11,.second=0,.partofsecond=10};
-    Time_t Stopwatch={.minute=0,.hour=0,.second=0,.partofsecond=0};
-    Date_t Date ={.Year=2024,.Month=4,.Day=17};
-
-
-	uint8 Time [12];
-uint8	Increment_Day_Flag=0;
-void Increment_Date(Date_t * Date )
-{
-	 uint32 daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-
-	        // Check for end of month
-	        if (Date->Day > daysInMonth[Date->Month - 1])
-	        {
-	            Date->Day = 1;
-	            Date->Month++;
-
-	            // Check for end of year
-	            if (Date->Month > 12)
-	            {
-	                Date->Month = 1;
-	                Date->Year++;
-	            }
-	        }
+#define CLOCK_MODE     0
+#define STOPWATCH_MODE 1
 
 
 
-}
+//time date array
+/*
+
+#define HOUR_TENTH  0
+#define HOUR_UNIT   1
 
 
-void Increment_Timer(Time_t * Timer)
-{
-
-	Timer->partofsecond+=1;
-
-    if (Timer->partofsecond>=100)
-    {
-    	Timer->partofsecond = 0;
-    	Timer->second++;
+#define MIN_TENTH   3
+#define MIN_UNIT    4
 
 
-    }
-    if (Timer->second>= 60)
-         {
-         	Timer->second= 0;
-         	Timer->minute++;
-         }
-         if (Timer->minute >= 60)
-         {
-         	Timer->minute = 0;
-         	Timer->hour++;
-         }
-         if (Timer->hour >= 24)
-         {
-             Timer->hour = 0;
+#define SEC_TENTH   6
+#define SEC_UNIT    7
 
-         }
-}
-void Increment_StopWatch(Time_t * Timer)
-{
-Increment_Timer(Timer);
+#define MS_UNIT     9
+*/
 
-}
-void Increment_Clock(Time_t * Timer,Date_t * Date)
-	{
-    Increment_Timer(Timer);
+#define Year_Idx  0
+#define Month_Idx 1
+#define Day_Idx   2
+#define Hr_Idx    3
+#define Min_Idx   4
+#define Sec_Idx   5
+#define Ms_Idx    6
 
-    Increment_Date(Date);
-	}
+
+#define SW_Hr_Idx    0
+#define SW_Min_Idx   1
+#define SW_Sec_Idx   2
+#define SW_Ms_Idx    3
+
+#define CLOCK_MODE     0
+#define STOPWATCH_MODE 1
+
+uint8 Current_Mode=CLOCK_MODE;
+
+uint64 timestamp=0;
+uint64 timestampSW=0;
+uint8 Stopwatch_Resume_Start=0;
+
+
+uint64 Current_Date[7]={
+		[Year_Idx]=2024,
+		[Month_Idx]=4,
+		[Day_Idx]=17,
+		[Hr_Idx]=11,
+		[Min_Idx]=11,
+		[Sec_Idx]=11,
+		[Ms_Idx]=0,
+
+
+
+};
+uint64 Prev_Date[7]={
+		[Year_Idx]=0,
+		[Month_Idx]=0,
+		[Day_Idx]=0,
+		[Hr_Idx]=0,
+		[Min_Idx]=0,
+		[Sec_Idx]=11,
+		[Ms_Idx]=0,
+
+
+
+};
+uint64 StopWatch[]={
+		[SW_Hr_Idx]=0,
+		[SW_Min_Idx]=0,
+		[SW_Sec_Idx]=0,
+		[SW_Ms_Idx]=0,
+
+
+};
+uint8 string[11];
+void Convert_TimeStamptoDate(uint64 ms, uint64 *timeArray) ;
+void Convert_TimestamptoStopwatch(uint64_t ms, uint64_t *timeArray) ;
 void ConvertDigitToChar(uint8 digit, uint8 *buffer) {
     buffer[0] = (digit / 10) + '0';
     buffer[1] = (digit % 10) + '0';//convert to ascii
 }
-
-void FormatTimeToString(Time_t time, uint8 *buffer) {
-    ConvertDigitToChar(time.hour, buffer);
-    buffer[2] = ':';
-    ConvertDigitToChar(time.minute, buffer + 3);
-    buffer[5] = ':';
-    ConvertDigitToChar(time.second, buffer + 6);
-    buffer[8] = '.';
-    ConvertDigitToChar(time.partofsecond, buffer + 9);
-    buffer[11] = '\0'; // Null terminator
-}
-
-
-void ConvertDateToString(Date_t date, uint8 *buffer)
-{
-   // ConvertDigitToChar(date.Year / 1000, buffer);
-    buffer[0]=date.Year / 1000+'0';
-    buffer[1]=(date.Year / 100) % 10+'0';
-    buffer[2]=(date.Year / 10) % 10+'0';
-    buffer[3]=date.Year % 10+'0';
-   // ConvertDigitToChar((date.Year / 100) % 10, buffer + 2);
-   // ConvertDigitToChar((date.Year / 10) % 10, buffer + 4);
-  //  ConvertDigitToChar(date.Year % 10, buffer + 6);
+void ConvertDateToString(uint64_t *date, uint8_t *buffer) {
+    buffer[0] = date[Year_Idx] / 1000 + '0';
+    buffer[1] = (date[Year_Idx] / 100) % 10 + '0';
+    buffer[2] = (date[Year_Idx] / 10) % 10 + '0';
+    buffer[3] = date[Year_Idx] % 10 + '0';
     buffer[4] = '/'; // Separator between year and month
-    ConvertDigitToChar(date.Month, buffer + 5);
+    ConvertDigitToChar(date[Month_Idx], buffer + 5);
     buffer[7] = '/'; // Separator between month and day
-    ConvertDigitToChar(date.Day, buffer + 8);
+    ConvertDigitToChar(date[Day_Idx], buffer + 8);
     buffer[10] = '\0'; // Null-terminate the string
 }
-
-uint8 Clockstring[12];
-uint8 StopWatchString[12];
-
-uint8 dateString[11];
-void APP_Runnable(void)
-
-{
-      CLCD_ClearDisplayAsynch();
-      uint8 FIRST_SWITCH_STATUS=0;
-      HSWITCH_GetStatus(HSWITCH_1,&FIRST_SWITCH_STATUS);
-
-	 // uint8 dateString[11]; // Buffer to hold the date string (YYYY-MM-DD\0)
-      ConvertDateToString(Date, dateString);
-          CLCD_WriteStringAsynch(dateString,10);
-      if (FIRST_SWITCH_STATUS==HSWITCH_PRESSED)
-      {
-    	 /* FormatTimeToString(currentTime, Clockstring);
-    	  	   CLCD_SetCursorAsynch(LINE2,COL1);
-    	  	   CLCD_WriteStringAsynch(Clockstring,11);
-    	  	 */
-
-         Stopwatch.hour=0;
-         Stopwatch.minute=0;
-         Stopwatch.second=0;
-         Stopwatch.partofsecond=0;
-
-      }
-	  /* FormatTimeToString(currentTime, Clockstring);
-	   CLCD_SetCursorAsynch(LINE2,COL1);
-	   CLCD_WriteStringAsynch(Clockstring,11);
-
- */
-      else if (FIRST_SWITCH_STATUS==HSWITCH_RELEASED)
-      {
-      FormatTimeToString(Stopwatch, StopWatchString);
-     	   CLCD_SetCursorAsynch(LINE2,COL1);
-     	   CLCD_WriteStringAsynch(StopWatchString,11);
-      }
-	//   CLCD_WriteStringAsynch(Timestring,11);
-
-
-	   // CLCD_WriteStringAsynch("W",1);
-
-
-	// SW_MUSIC_PLAY
-	//HSWITCH_GetStatus(HSWITCH_1,&FIRST_SWITCH_STATUS);
-/*
-
-	 SW_GetState(SW_MUSIC_PLAY,&FIRST_SWITCH_STATUS);
-	if (FIRST_SWITCH_STATUS==HSWITCH_PRESSED)
-	   		{
-	  		    CLCD_WriteStringAsynch("WELCOME HOME",12);
-		LED_SetState(LED_Red,LED_STATE_ON);
-		  CLCD_ClearDisplayAsynch();
-
-	   		}
-	  	else if (FIRST_SWITCH_STATUS==HSWITCH_RELEASED)
-	  	{
-	  	   CLCD_ClearDisplayAsynch();
-	  		LED_SetState(LED_Red,LED_STATE_OFF);
-
-	  	}
-*/
-
-	/*
-    CLCD_ClearDisplayAsynch();
-    CLCD_SetCursorAsynch(LINE2,COL1);
-    FormatTimeToString(currentTime, Time);
-	    CLCD_WriteStringAsynch(Time,8);
-	    */
-}
-
-
 void Runnable_Timer()
 {
-//	currentTime.partofsecond+=10;
-	//Stopwatch.partofsecond+=10;
-	Increment_Clock(&currentTime,&Date);
-    Increment_StopWatch(&Stopwatch);
+timestamp++;
+if(Stopwatch_Resume_Start==1)
+	{
+	    timestampSW++;
+	}
+}
+
+void Runnable_Clock_Update()
+{
+	Convert_TimeStamptoDate(timestamp,Current_Date);
+	if(Stopwatch_Resume_Start==1)
+	{
+	Convert_TimestamptoStopwatch(timestampSW,StopWatch);
+	}
+}
+
+void APP_Runnable(void)
+{
+	//CLCD_ClearDisplayAsynch();
+for(uint8 ind =0; ind<3;ind++)
+{
+if (Current_Date[ind]!= Prev_Date[ind])
+{
+	ConvertDateToString(Current_Date,string);
+		 CLCD_SetCursorAsynch(LINE2,COL1);
+		 CLCD_WriteStringAsynch(string,10);
+		 Prev_Date[ind]=Current_Date[ind];
+}
 
 }
+
+
+}
+
 int
 main(int argc, char* argv[])
 {
-
-
-#ifdef TEST_SCHED
-
 	RCC_ManageClock(RCC_CLOCK_HSI,RCC_STATE_ENABLE);
 	RCC_SelectSystemClock(RCC_CLOCK_HSI);
-
-    //Traffic_Init();
-
-
-
-	SCHED_Init();
-	SCHED_Start();
-
-
-
-
-
-#endif
-/*	uint8 data ='H';
-
-	RCC_ManageClock(RCC_CLOCK_HSI,RCC_STATE_ENABLE);
-	RCC_SelectSystemClock(RCC_CLOCK_HSI);
-
 	RCC_ControlPeripheral(RCC_AHB1,GPIOA,RCC_STATE_ENABLE);
+	RCC_ControlPeripheral(RCC_AHB1,GPIOB,RCC_STATE_ENABLE);
 
-    LCD_InitAsync();
 
 	SCHED_Init();
-
-
+	CLCD_InitAsynch();
+	HSWITCH_Init();
+	LED_Init();
 	SCHED_Start();
-	LCD_WriteStringAsync(&data,1,0,0);
-	// LCD_WriteChar( 'H');
+}
+//
+//#include <stdio.h>
+//
+void Convert_TimeStamptoDate(uint64 ms, uint64 *timeArray) {
+    // Constants for time conversion
+    const long long msPerSecond = 1000;
+    const long long msPerMinute = 60 * msPerSecond;
+    const long long msPerHour = 60 * msPerMinute;
+    const long long msPerDay = 24 * msPerHour;
+    const long long msPerYear = 365 * msPerDay; // Approximation
 
-*/
+    // Maximum values for each time unit
+     int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // Days in each month
 
+    // Extract values from the array
+    int years = timeArray[0];
+    int months = timeArray[1];
+    int days = timeArray[2];
+    int hours = timeArray[3];
+    int minutes = timeArray[4];
+    int seconds = timeArray[5];
 
+    // Increment the values
+    years += ms / msPerYear;
+    ms %= msPerYear;
 
-RCC_ManageClock(RCC_CLOCK_HSI,RCC_STATE_ENABLE);
-RCC_SelectSystemClock(RCC_CLOCK_HSI);
-RCC_ControlPeripheral(RCC_AHB1,GPIOA,RCC_STATE_ENABLE);
-RCC_ControlPeripheral(RCC_AHB1,GPIOB,RCC_STATE_ENABLE);
+    int remainingDays = ms / msPerDay;
 
+    // Adjust for leap years
+    int leapYear = (years % 4 == 0 && (years % 100 != 0 || years % 400 == 0));
+    if (leapYear)
+        daysInMonth[1] = 29;
 
-SCHED_Init();
-CLCD_InitAsynch();
-HSWITCH_Init();
-LED_Init();
-SCHED_Start();
+    // Calculate months and days
+    months += remainingDays / daysInMonth[months - 1];
+    days += remainingDays % daysInMonth[months - 1];
 
-
-
+    // Adjust for overflow
+    if (days >= daysInMonth[months - 1]) {
+        days -= daysInMonth[months - 1];
+        months += 1;
     }
 
+    // Adjust for overflow
+    if (months > 12) {
+        months -= 12;
+        years += 1;
+    }
 
+    // Convert remaining milliseconds to hours, minutes, and seconds
+    ms %= msPerDay;
+    hours += ms / msPerHour;
+    ms %= msPerHour;
+    minutes += ms / msPerMinute;
+    ms %= msPerMinute;
+    seconds += ms / msPerSecond;
 
+    // Adjust values if they exceed their maximum
+    if (seconds >= 60) {
+        minutes += seconds / 60;
+        seconds %= 60;
+    }
 
-#pragma GCC diagnostic pop
+    if (minutes >= 60) {
+        hours += minutes / 60;
+        minutes %= 60;
+    }
 
-// ----------------------------------------------------------------------------
+    if (hours >= 24) {
+        days += hours / 24;
+        hours %= 24;
+    }
+
+    // Update milliseconds in the array, capped at 999
+    timeArray[6] = (int)((ms % msPerSecond) / 10);
+    if (timeArray[6] > 99)
+        timeArray[6] = 99;
+
+    // Update the values in the array
+    timeArray[0] = years;
+    timeArray[1] = months;
+    timeArray[2] = days;
+    timeArray[3] = hours;
+    timeArray[4] = minutes;
+    timeArray[5] = seconds;
+}
+
+void Convert_TimestamptoStopwatch(uint64_t ms, uint64_t *timeArray) {
+    // Create a separate array to hold the updated values
+    uint64_t updatedTime[4] = {timeArray[SW_Hr_Idx], timeArray[SW_Min_Idx], timeArray[SW_Sec_Idx], timeArray[SW_Ms_Idx]};
+
+    // Constants for time conversion
+    const uint64_t msPerSecond = 1000;
+    const uint64_t msPerMinute = 60 * msPerSecond;
+    const uint64_t msPerHour = 60 * msPerMinute;
+
+    // Increment the values
+    updatedTime[SW_Hr_Idx] += ms / msPerHour;
+    ms %= msPerHour;
+
+    updatedTime[SW_Min_Idx] += ms / msPerMinute;
+    ms %= msPerMinute;
+
+    updatedTime[SW_Sec_Idx] += ms / msPerSecond;
+    ms %= msPerSecond;
+
+    // Update milliseconds in the array, capped at 999
+    updatedTime[SW_Ms_Idx] += (ms + 5) / 10; // Rounding up to the nearest tenth
+    if (updatedTime[SW_Ms_Idx] > 99)
+        updatedTime[SW_Ms_Idx] = 99;
+
+    // Handle overflow for seconds, minutes, and hours
+    if (updatedTime[SW_Sec_Idx] >= 60) {
+        updatedTime[SW_Min_Idx] += updatedTime[SW_Sec_Idx] / 60;
+        updatedTime[SW_Sec_Idx] %= 60;
+    }
+
+    if (updatedTime[SW_Min_Idx] >= 60) {
+        updatedTime[SW_Hr_Idx] += updatedTime[SW_Min_Idx] / 60;
+        updatedTime[SW_Min_Idx] %= 60;
+    }
+
+    if (updatedTime[SW_Hr_Idx] >= 24) {
+        // Handle overflow for hours exceeding 24
+        updatedTime[SW_Hr_Idx] %= 24;
+    }
+
+    // Copy the updated values back to the original array
+    for (int i = 0; i < 4; i++) {
+        timeArray[i] = updatedTime[i];
+    }
+}
