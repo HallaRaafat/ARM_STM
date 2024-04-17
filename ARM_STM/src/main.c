@@ -111,6 +111,16 @@ void ConvertDigitToChar(uint8 digit, uint8 *buffer) {
     buffer[0] = (digit / 10) + '0';
     buffer[1] = (digit % 10) + '0';//convert to ascii
 }
+void FormatTimeToString(uint64_t *time, uint8_t *buffer) {
+    ConvertDigitToChar(time[Hr_Idx], buffer);
+    buffer[2] = ':';
+    ConvertDigitToChar(time[Min_Idx], buffer + 3);
+    buffer[5] = ':';
+    ConvertDigitToChar(time[Sec_Idx], buffer + 6);
+    buffer[8] = '.';
+    ConvertDigitToChar(time[Ms_Idx], buffer + 9);
+    buffer[11] = '\0'; // Null terminator
+}
 void ConvertDateToString(uint64_t *date, uint8_t *buffer) {
     buffer[0] = date[Year_Idx] / 1000 + '0';
     buffer[1] = (date[Year_Idx] / 100) % 10 + '0';
@@ -143,13 +153,17 @@ void Runnable_Clock_Update()
 void APP_Runnable(void)
 {
 	//CLCD_ClearDisplayAsynch();
-for(uint8 ind =0; ind<3;ind++)
-{
+	static last_up_time=0;
+for(uint8 ind =3; ind<7;ind++)
+{uint8 col=0;
 if (Current_Date[ind]!= Prev_Date[ind])
 {
-	ConvertDateToString(Current_Date,string);
-		 CLCD_SetCursorAsynch(LINE2,COL1);
-		 CLCD_WriteStringAsynch(string,10);
+	ConvertDigitToChar(Current_Date[ind],string);
+	//ConvertDateToString(Current_Date,string);
+
+
+		 CLCD_SetCursorAsynch(LINE2,(ind-3)*3);
+		 CLCD_WriteStringAsynch(string,2);
 		 Prev_Date[ind]=Current_Date[ind];
 }
 
