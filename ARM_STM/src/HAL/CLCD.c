@@ -92,7 +92,10 @@ typedef struct
     uint8 ColPos;
 
 } CLCD_Write_t;
-
+typedef struct
+{
+	uint8 Num_Buff[16];
+}Num_Buff_t;
  typedef struct
 {
 
@@ -101,7 +104,7 @@ typedef struct
 	CLCD_UserReqState_t state;
 	CLCD_UserReqType_t Type;
 	CLCD_Write_t CurrPos;
-
+	Num_Buff_t Num_Buffer;
 } CLCD_UserRequest_t;
 
 extern CLCD_CFG_t LCDS[_LCD_NUM];
@@ -131,7 +134,11 @@ static CLCD_enuErrorStatus_t CLCD_Write_Proc(void);
 static CLCD_enuErrorStatus_t CLCD_SetPosition_Proc(void);
 static CLCD_enuErrorStatus_t CLCD_WriteNum_Proc(void);
 
-static uint8 Num_Buff[16];
+
+
+
+//Num_Buff_t Num_Buffer[BUFFER_SIZE];
+//static uint8 Num_Buff[16];
 
 
 
@@ -577,49 +584,47 @@ CLCD_enuErrorStatus_t CLCD_WriteStringAsynch(uint8 * Ptr_string,uint8 Length)
 
 CLCD_enuErrorStatus_t CLCD_WriteNumAsynch(uint32 NUM)
 {
-	CLCD_enuErrorStatus_t Ret_enuErrorStatusCLCD = CLCD_enuOK;
+    CLCD_enuErrorStatus_t Ret_enuErrorStatusCLCD = CLCD_enuOK;
 
-	uint8 Loc_Count=0;
-	uint8 Loc_index=0;
-	uint32 Loc_temp=NUM;
+    uint8 Loc_Count=0;
+    uint8 Loc_index=0;
+    uint32 Loc_temp=NUM;
+   ;
 
-	for(uint8 Idx=0;Idx<BUFFER_SIZE;Idx++)
-{
-	if(CLCDState==CLCD_Operation && UserRequest[Idx].state==CLCD_Ready)
-	{
+    // Clear the local buffer
+   // memset(Num_Buff, 0, sizeof(Num_Buff));
 
-		UserRequest[Idx].state=CLCD_Busy;
-		UserRequest[Idx].Type=CLCD_Write;
-		if (NUM==0)
-		{
-			Loc_Count++;
-		}
-		else
-		{
-			while (Loc_temp!=0)
-			{
-				Loc_temp=Loc_temp/10;
-				Loc_Count++;
-			}
+    for(uint8 Idx=0; Idx<BUFFER_SIZE; Idx++)
+    {
+        if(CLCDState == CLCD_Operation && UserRequest[Idx].state == CLCD_Ready)
+        {
+            UserRequest[Idx].state = CLCD_Busy;
+            UserRequest[Idx].Type = CLCD_Write;
 
-		}
-		Loc_index=Loc_Count-1;
-		while (Loc_index!=0xFF)
-		{
-			Num_Buff[Loc_index]=(NUM%10)+'0';
-			NUM=NUM/10;
-			Loc_index--;
-		}
-		UserRequest[Idx].Length=Loc_Count;
-		UserRequest[Idx].String=Num_Buff;
+            do{
+            	UserRequest[Idx].Num_Buffer.Num_Buff[Loc_Count++] = (Loc_temp % 10) + '0';
+                    Loc_temp = Loc_temp / 10;
+                }while(Loc_temp);
+            UserRequest[Idx].Num_Buffer.Num_Buff[Loc_Count]='\0';
 
-	}
+            // Reverse the buffer to get the correct order of digits
+            for (Loc_index = 0; Loc_index < Loc_Count / 2; Loc_index++)
+            {
+                uint8 temp = UserRequest[Idx].Num_Buffer.Num_Buff[Loc_index];
+                UserRequest[Idx].Num_Buffer.Num_Buff[Loc_index] = UserRequest[Idx].Num_Buffer.Num_Buff[Loc_Count - Loc_index - 1];
+                UserRequest[Idx].Num_Buffer.Num_Buff[Loc_Count - Loc_index - 1] = temp;
+            }
 
-}
+            UserRequest[Idx].Length = Loc_Count;
+
+            UserRequest[Idx].String = UserRequest[Idx].Num_Buffer.Num_Buff;
+
+            break; // Exit the loop after processing one request
+        }
+    }
+
     return Ret_enuErrorStatusCLCD;
-
 }
-
 CLCD_enuErrorStatus_t CLCD_SetCursorAsynch(uint8 XPOS,uint8 YPOS)
 {
 	CLCD_enuErrorStatus_t Ret_enuErrorStatusCLCD = CLCD_enuOK;
