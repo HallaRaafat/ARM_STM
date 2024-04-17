@@ -25,4 +25,5 @@ void Log_Write(Level_t severity ,const char * format, ... );
 *           if  Info    , info and warrnings ,errors and critical   
 */            
 void Log_SetSeverity(Level_t severity);
+
 void Log_Close ();

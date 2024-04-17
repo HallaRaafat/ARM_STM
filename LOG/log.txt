@@ -1,1 +1,4 @@
-[Tue Mar  5 00:01:34 2024] [CRITICAL] critical message 1
+[Tue Mar  5 00:14:36 2024] [ERROR] error message 
+[Tue Mar  5 00:14:36 2024] [WARNING] Warning message 1
+[Tue Mar  5 00:14:36 2024] [CRITICAL] critical message 1
+[Tue Mar  5 00:14:36 2024] [ERROR] error message 2
