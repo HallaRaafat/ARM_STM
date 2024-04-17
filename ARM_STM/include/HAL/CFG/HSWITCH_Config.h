@@ -12,9 +12,15 @@
 typedef enum
 
 {
-    HSWITCH_1,
-   // HSWITCH_2,
-//	HSWITCH_3,
+    HSWITCH_Up,
+    HSWITCH_Down,
+	HSWITCH_Right,
+	HSWITCH_Left,
+
+	HSWITCH_Edit_Reset,
+	HSWITCH_OK_Start,
+	HSWITCH_Mode,
+
 
    /*configure the desired number of HSWITCHES*/
 

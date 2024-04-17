@@ -17,10 +17,12 @@
 typedef enum
 {
 	//Runnable_Traffic,
-   Runnable_LCD,
+   Runnable_Timer_Update,
+   Runnable_Clock_Stop_Update,
    Runnable_APP,
    Runnable_SWITCH,
-   Runnable__Timer_Update,
+   Runnable_LCD,
+
   _Num_Runnables
 }Runnables;
 
