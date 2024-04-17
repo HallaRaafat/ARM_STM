@@ -8,7 +8,7 @@
 #include "HAL/HSWITCH.h"
 
 extern HSWITCH_CFG_t HSWITCHES [_HSWITCH_NUM];
-static uint8 HSWITCH_status[_HSWITCH_NUM];
+uint8 HSWITCH_status[_HSWITCH_NUM];
 
 HSWITCH_enuErrorStatus_t HSWITCH_Init(void)
 {

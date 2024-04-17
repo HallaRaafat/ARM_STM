@@ -21,7 +21,11 @@ typedef enum
    Runnable_Clock_Stop_Update,
    Runnable_APP,
    Runnable_SWITCH,
+   Runnable_Input,
+   Runnable_UART,
+
    Runnable_LCD,
+
 
   _Num_Runnables
 }Runnables;
